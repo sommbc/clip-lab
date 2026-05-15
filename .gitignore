@@ -1,0 +1,80 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*cookie*.txt
+*cookies*.json
+cookies/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage/
+*.pyc
+*.egg-info/
+
+# Node
+node_modules/
+apps/**/node_modules/
+dist/
+build/
+apps/**/dist/
+apps/**/build/
+
+# Runtime IO
+uploads/
+output/
+downloads/
+tmp/
+temp/
+cache/
+.cache/
+*.tmp
+
+# Media and generated clips. Keep only intentional fixtures.
+*.mp4
+*.mov
+*.m4v
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.aac
+*.m4a
+*.gif
+*.png
+*.jpg
+*.jpeg
+*.zip
+!fixtures/
+!fixtures/**
+!fixtures/sample.mp4
+
+# Model caches and downloaded weights
+*.bin
+*.safetensors
+*.onnx
+models/
+.cache/
+hf_cache/
+huggingface/
+torch/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Local agent/tooling state
+AGENTS.md
+CLAUDE.md
+.claude/
+.codex/

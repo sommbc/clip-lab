@@ -1,0 +1,76 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      args:
+        INSTALL_WHISPERX: ${INSTALL_WHISPERX:-false}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./output:/app/output
+      - ./uploads:/app/uploads
+      - ./fixtures:/app/fixtures:ro
+    environment:
+      CLIP_LAB_OUTPUT_ROOT: ${CLIP_LAB_OUTPUT_ROOT:-/app/output}
+      CLIP_LAB_RENDERER_URL: ${CLIP_LAB_RENDERER_URL:-http://renderer:3100}
+      CLIP_LAB_MAX_CLIPS: ${CLIP_LAB_MAX_CLIPS:-5}
+      CLIP_LAB_TRANSCRIPTION_PROVIDER: ${CLIP_LAB_TRANSCRIPTION_PROVIDER:-whisperx}
+      CLIP_LAB_CORS_ORIGINS: ${CLIP_LAB_CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      CLIP_LAB_WHISPERX_MODEL: ${CLIP_LAB_WHISPERX_MODEL:-large-v3}
+      CLIP_LAB_WHISPERX_DEVICE: ${CLIP_LAB_WHISPERX_DEVICE:-cpu}
+      CLIP_LAB_WHISPERX_COMPUTE_TYPE: ${CLIP_LAB_WHISPERX_COMPUTE_TYPE:-int8}
+      CLIP_LAB_WHISPERX_BATCH_SIZE: ${CLIP_LAB_WHISPERX_BATCH_SIZE:-16}
+      CLIP_LAB_WHISPERX_ALIGN: ${CLIP_LAB_WHISPERX_ALIGN:-true}
+      CLIP_LAB_MODEL_PROVIDER: ${CLIP_LAB_MODEL_PROVIDER:-openrouter}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
+      CLIP_LAB_CANDIDATE_MODEL: ${CLIP_LAB_CANDIDATE_MODEL:-}
+      CLIP_LAB_CRITIC_MODEL: ${CLIP_LAB_CRITIC_MODEL:-}
+      CLIP_LAB_PACKAGING_MODEL: ${CLIP_LAB_PACKAGING_MODEL:-}
+      CLIP_LAB_CANDIDATE_FALLBACK_MODEL: ${CLIP_LAB_CANDIDATE_FALLBACK_MODEL:-}
+      CLIP_LAB_CRITIC_FALLBACK_MODEL: ${CLIP_LAB_CRITIC_FALLBACK_MODEL:-}
+      CLIP_LAB_PACKAGING_FALLBACK_MODEL: ${CLIP_LAB_PACKAGING_FALLBACK_MODEL:-}
+      HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN:-}
+    depends_on:
+      renderer:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 15s
+
+  renderer:
+    build:
+      context: ./apps/renderer
+      dockerfile: service/Dockerfile
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./output:/output
+    environment:
+      REMOTION_BUNDLE_PATH: /app/remotion
+      REMOTION_BROWSER_EXECUTABLE: /usr/bin/chromium
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
+      OUTPUT_DIR: /output
+      PORT: 3100
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3100/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  web:
+    build:
+      context: ./apps/web
+    profiles:
+      - web
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    depends_on:
+      - api

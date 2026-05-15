@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clip-lab"
+version = "0.1.0"
+description = "Open-source pipeline for turning long-form video into polished short-form clips."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Clip Lab contributors" }]
+dependencies = [
+  "fastapi>=0.110",
+  "httpx>=0.27",
+  "pydantic>=2.7",
+  "python-multipart>=0.0.27",
+  "uvicorn[standard]>=0.29",
+  "yt-dlp>=2024.4.9"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0.3",
+  "ruff>=0.5"
+]
+video = [
+  "opencv-python>=4.9",
+  "scenedetect>=0.6"
+]
+whisperx = [
+  "whisperx>=3.3"
+]
+
+[project.scripts]
+clip-lab = "cliplab_api.cli:main"
+
+[tool.setuptools.packages.find]
+where = [
+  "apps/api",
+  "packages/captions",
+  "packages/clip_intelligence",
+  "packages/pipeline",
+  "packages/shared",
+  "packages/transcription",
+  "packages/video_processing"
+]
+include = [
+  "cliplab_api*",
+  "cliplab_captions*",
+  "cliplab_clip_intelligence*",
+  "cliplab_pipeline*",
+  "cliplab_shared*",
+  "cliplab_transcription*",
+  "cliplab_video_processing*"
+]
+
+[tool.setuptools.package-data]
+cliplab_clip_intelligence = ["prompts/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [
+  "apps/api",
+  "packages/captions",
+  "packages/clip_intelligence",
+  "packages/pipeline",
+  "packages/shared",
+  "packages/transcription",
+  "packages/video_processing"
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
