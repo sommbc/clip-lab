@@ -13,7 +13,7 @@
     "build": "tsc --noEmit"
   },
   "dependencies": {
-    "@remotion/cli": "^4.0.0",
+    "@remotion/cli": "^4.0.464",
     "@remotion/google-fonts": "^4.0.0",
     "@remotion/layout-utils": "^4.0.0",
     "@remotion/media": "^4.0.447",
