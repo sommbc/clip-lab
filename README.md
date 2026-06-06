@@ -39,6 +39,10 @@ providers only when needed.
 - model-backed intelligence depends on external provider availability and rate limits
 - browser UI is optional and secondary to the backend workflow
 
+## Public Review Status
+
+Clip Lab is intentionally public as a local-first developer pipeline. It has a fixture path that runs without private media, WhisperX, or model keys; CI checks backend tests, renderer builds, optional web build, Docker Compose smoke, dependency audits, public-tree hygiene, and secret patterns. See [Public Review Notes](docs/public-review.md).
+
 ## Quickstart
 
 ```bash

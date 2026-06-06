@@ -4,23 +4,40 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 2
 
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 2
 
   - package-ecosystem: "npm"
     directory: "/apps/renderer"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 2
+    groups:
+      renderer-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/apps/renderer/service"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 2
+    groups:
+      renderer-service-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/apps/web"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 2
+    groups:
+      web-dependencies:
+        patterns:
+          - "*"
